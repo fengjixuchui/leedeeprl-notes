@@ -39,7 +39,7 @@
 
 ![](img/12.4.png)
 
-在连续控制领域，比较经典的强化学习算法就是 `DDPG(Deep Deterministic Policy Gradient)`。DDPG 的特点可以从它的名字当中拆解出来，拆解成 Deep、Deterministic 和 Policy Gradient。
+在连续控制领域，比较经典的强化学习算法就是 `深度确定性策略梯度(Deep Deterministic Policy Gradient，简称 DDPG)`。DDPG 的特点可以从它的名字当中拆解出来，拆解成 Deep、Deterministic 和 Policy Gradient。
 
 * Deep 是因为用了神经网络；
 * Deterministic 表示 DDPG 输出的是一个确定性的动作，可以用于连续动作的一个环境；
@@ -83,7 +83,7 @@ DDPG 是 DQN 的一个扩展的版本。
 这里要注意，除了策略网络要做优化，DDPG 还有一个 Q 网络也要优化。
 
 * 评委一开始也不知道怎么评分，它也是在一步一步的学习当中，慢慢地去给出准确的打分。
-* 那我们优化 Q 网络的方法其实跟 DQN 优化 Q 网络的方法是一模一样的，我们用真实的 reward $r$ 和下一步的 Q 即 Q' 来去拟合未来的收益也就是 Q_target。
+* 我们优化 Q 网络的方法其实跟 DQN 优化 Q 网络的方法是一样的，我们用真实的 reward $r$ 和下一步的 Q 即 Q' 来去拟合未来的收益 Q_target。
 
 * 然后让 Q 网络的输出去逼近这个 Q_target。
   * 所以构造的 loss function 就是直接求这两个值的均方差。
@@ -93,30 +93,78 @@ DDPG 是 DQN 的一个扩展的版本。
 
 我们可以把两个网络的 loss function 构造出来。
 
-策略网络的 loss function 是一个复合函数。我们把 $a = \mu_\theta(s)$ 代进去，最终策略网络要优化的是策略网络的参数 $\theta$ 。Q 网络要优化的是那个 Q 的输出 $Q_w(s,a)$ 和那个 Q_target 之间的一个均方差。
+策略网络的 loss function 是一个复合函数。我们把 $a = \mu_\theta(s)$ 代进去，最终策略网络要优化的是策略网络的参数 $\theta$ 。Q 网络要优化的是 $Q_w(s,a)$ 和 Q_target 之间的一个均方差。
 
-但是 Q 网络的优化存在一个和 DQN 一模一样的问题就是它后面的这个 Q_target 是不稳定的。这个在之前的 DQN 有讲过。后面的 $Q_{\bar{w}}\left(s^{\prime}, a^{\prime}\right)$ 也是不稳定的。因为 $Q_{\bar{w}}\left(s^{\prime}, a^{\prime}\right)$ 也是一个预估的值。
+但是 Q 网络的优化存在一个和 DQN 一模一样的问题就是它后面的 Q_target 是不稳定的。此外，后面的 $Q_{\bar{w}}\left(s^{\prime}, a^{\prime}\right)$ 也是不稳定的，因为 $Q_{\bar{w}}\left(s^{\prime}, a^{\prime}\right)$ 也是一个预估的值。
 
 **为了稳定这个 Q_target，DDPG 分别给 Q 网络和策略网络都搭建了 target network。**
 
 * target_Q 网络就为了来计算 Q_target 里面的 $Q_{\bar{w}}\left(s^{\prime}, a^{\prime}\right)$。
-* 然后 $Q_{\bar{w}}\left(s^{\prime}, a^{\prime}\right)$  里面的需要的 next action $a'$  就是通过 target_P 网络来去输出，即 $a^{\prime}=\mu_{\bar{\theta}}\left(s^{\prime}\right)$。
+* $Q_{\bar{w}}\left(s^{\prime}, a^{\prime}\right)$  里面的需要的 next action $a'$  就是通过 target_P 网络来去输出，即 $a^{\prime}=\mu_{\bar{\theta}}\left(s^{\prime}\right)$。
 
 * 为了区分前面的 Q 网络和策略网络以及后面的 target_Q 网络和 target_P 策略网络，前面的网络的参数是 $w$，后面的网络的参数是 $\bar{w}$。
 * DDPG 有四个网络，策略网络的 target 网络 和 Q 网络的 target 网络就是颜色比较深的这两个，它只是为了让计算 Q_target 的时候能够更稳定一点而已。因为这两个网络也是固定一段时间的参数之后再跟评估网络同步一下最新的参数。
 
 这里面训练需要用到的数据就是 $s,a,r,s'$，我们只需要用到这四个数据。我们就用 Replay Memory 把这些数据存起来，然后再 sample 进来训练就好了。这个经验回放的技巧跟 DQN 是一模一样的。注意，因为 DDPG 使用了经验回放这个技巧，所以 DDPG 是一个 `off-policy` 的算法。
 
-## Exploration vs. Exploitation
+### Exploration vs. Exploitation
 DDPG 通过 off-policy 的方式来训练一个确定性策略。因为策略是确定的，如果 agent 使用同策略来探索，在一开始的时候，它会很可能不会尝试足够多的 action 来找到有用的学习信号。为了让 DDPG 的策略更好地探索，我们在训练的时候给它们的 action 加了噪音。DDPG 的原作者推荐使用时间相关的 [OU noise](https://en.wikipedia.org/wiki/Ornstein–Uhlenbeck_process)，但最近的结果表明不相关的、均值为 0 的 Gaussian noise 的效果非常好。由于后者更简单，因此我们更喜欢使用它。为了便于获得更高质量的训练数据，你可以在训练过程中把噪声变小。
 
 在测试的时候，为了查看策略利用它学到的东西的表现，我们不会在 action 中加噪音。
+
+## Twin Delayed DDPG(TD3)
+
+![](img/12.9.png 'size=500')
+
+虽然 DDPG 有时表现很好，但它在超参数和其他类型的调整方面经常很敏感。DDPG 常见的问题是已经学习好的 Q 函数开始显著地高估 Q 值，然后导致策略被破坏了，因为它利用了 Q 函数中的误差。
+
+我们可以拿实际的 Q 值跟这个 Q-network 输出的 Q 值进行对比。实际的 Q 值可以用 MC 来算。根据当前的 policy 采样 1000 条轨迹，得到 G 后取平均，得到实际的 Q 值。
+
+`双延迟深度确定性策略梯度(Twin Delayed DDPG，简称 TD3)`通过引入三个关键技巧来解决这个问题：
+
+* **截断的双 Q 学习(Clipped Dobule Q-learning)** 。TD3 学习两个 Q-function（因此名字中有 “twin”）。TD3 通过最小化均方差来同时学习两个 Q-function：$Q_{\phi_1}$ 和 $Q_{\phi_2}$。两个 Q-function 都使用一个目标，两个 Q-function 中给出较小的值会被作为如下的 Q-target：
+
+$$
+y\left(r, s^{\prime}, d\right)=r+\gamma(1-d) \min _{i=1,2} Q_{\phi_{i, t a r g}}\left(s^{\prime}, a_{T D 3}\left(s^{\prime}\right)\right)
+$$
+
+* **延迟的策略更新(“Delayed” Policy Updates)**。相关实验结果表明，同步训练动作网络和评价网络，却不使用目标网络，会导致训练过程不稳定；但是仅固定动作网络时，评价网络往往能够收敛到正确的结果。因此 TD3 算法以较低的频率更新动作网络，较高频率更新评价网络，通常每更新两次评价网络就更新一次策略。
+* **目标策略平滑(Target Policy smoothing)**。TD3 引入了 smoothing 的思想。TD3 在目标动作中加入噪音，通过平滑 Q 沿动作的变化，使策略更难利用 Q 函数的误差。
+
+这三个技巧加在一起，使得性能相比基线 DDPG 有了大幅的提升。
+
+
+目标策略平滑化的工作原理如下：
+
+$$
+a_{T D 3}\left(s^{\prime}\right)=\operatorname{clip}\left(\mu_{\theta, t a r g}\left(s^{\prime}\right)+\operatorname{clip}(\epsilon,-c, c), a_{\text {low }}, a_{\text {high }}\right)
+$$
+
+其中 $\epsilon$ 本质上是一个噪声，是从正态分布中取样得到的，即 $\epsilon \sim N(0,\sigma)$。
+
+目标策略平滑化是一种正则化方法。
+
+![](img/12.10.png)
+
+我们可以将 TD3 跟其他算法进行对比。这边作者自己实现的 DDPG(our DDPG) 和官方实现的 DDPG 的表现不一样，这说明 DDPG 对初始化和调参非常敏感。TD3 对参数不是这么敏感。在 TD3 的论文中，TD3 的性能比 SAC(Soft Actor-Critic) 高。但在 SAC 的论文中，SAC 的性能比 TD3 高，这是因为强化学习的很多算法估计对参数和初始条件敏感。
+
+TD3 的作者给出了对应的实现：[TD3 Pytorch implementation](https://github.com/sfujim/TD3/)，代码写得很棒，我们可以将其作为一个强化学习的标准库来学习。
+
+### Exploration vs. Exploitation
+
+TD3 以 off-policy 的方式训练确定性策略。由于该策略是确定性的，因此如果智能体要探索策略，则一开始它可能不会尝试采取足够广泛的动作来找到有用的学习信号。为了使 TD3 策略更好地探索，我们在训练时在它们的动作中添加了噪声，通常是不相关的均值为零的高斯噪声。为了便于获取高质量的训练数据，你可以在训练过程中减小噪声的大小。
+
+在测试时，为了查看策略对所学知识的利用程度，我们不会在动作中增加噪音。
 
 ## References
 
 * [百度强化学习](https://aistudio.baidu.com/aistudio/education/lessonvideo/460292)
 
 * [OpenAI Spinning Up ](https://spinningup.openai.com/en/latest/algorithms/ddpg.html#)
+
+* [Intro to Reinforcement Learning (强化学习纲要）](https://github.com/zhoubolei/introRL)
+
+* [天授文档](https://tianshou.readthedocs.io/zh/latest/index.html)
 
   
 
