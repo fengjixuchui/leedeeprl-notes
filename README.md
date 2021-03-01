@@ -23,13 +23,14 @@
 | [第三章 表格型方法](https://datawhalechina.github.io/leedeeprl-notes/#/chapter3/chapter3) | [第三章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter3/chapter3_questions&keywords) | [项目一 使用 Q-learning 解决悬崖寻路问题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter3/project1) |
 | [第四章 策略梯度](https://datawhalechina.github.io/leedeeprl-notes/#/chapter4/chapter4) | [第四章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter4/chapter4_questions&keywords) |                                                              |
 | [第五章 近端策略优化 (PPO) 算法](https://datawhalechina.github.io/leedeeprl-notes/#/chapter5/chapter5) | [第五章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter5/chapter5_questions&keywords) |                                                              |
-| [第六章 Q 学习 (基本概念)](https://datawhalechina.github.io/leedeeprl-notes/#/chapter6/chapter6) | [第六章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter6/chapter6_questions&keywords) |                                                              |
-| [第七章 Q 学习 (进阶技巧)](https://datawhalechina.github.io/leedeeprl-notes/#/chapter7/chapter7) | [第七章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter7/chapter7_questions&keywords) | [项目二 使用 DQN 实现 CartPole-v0](https://datawhalechina.github.io/leedeeprl-notes/#/chapter7/project2) |
-| [第八章 Q 学习 (连续动作)](https://datawhalechina.github.io/leedeeprl-notes/#/chapter8/chapter8) | [第八章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter8/chapter8_questions&keywords) |                                                              |
+| [第六章 DQN (基本概念)](https://datawhalechina.github.io/leedeeprl-notes/#/chapter6/chapter6) | [第六章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter6/chapter6_questions&keywords) |                                                              |
+| [第七章 DQN (进阶技巧)](https://datawhalechina.github.io/leedeeprl-notes/#/chapter7/chapter7) | [第七章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter7/chapter7_questions&keywords) | [项目二 使用 DQN 实现 CartPole-v0](https://datawhalechina.github.io/leedeeprl-notes/#/chapter7/project2) |
+| [第八章 DQN (连续动作)](https://datawhalechina.github.io/leedeeprl-notes/#/chapter8/chapter8) | [第八章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter8/chapter8_questions&keywords) |                                                              |
 | [第九章 演员-评论家算法](https://datawhalechina.github.io/leedeeprl-notes/#/chapter9/chapter9) | [第九章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter9/chapter9_questions&keywords) |                                                              |
 | [第十章 稀疏奖励](https://datawhalechina.github.io/leedeeprl-notes/#/chapter10/chapter10) | [第十章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter10/chapter10_questions&keywords) |                                                              |
 | [第十一章 模仿学习](https://datawhalechina.github.io/leedeeprl-notes/#/chapter11/chapter11) | [第十一章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter11/chapter11_questions&keywords) |                                                              |
 | [第十二章 深度确定性策略梯度 (DDPG) 算法](https://datawhalechina.github.io/leedeeprl-notes/#/chapter12/chapter12) | [第十二章 习题](https://datawhalechina.github.io/leedeeprl-notes/#/chapter12/chapter12_questions&keywords) | [项目三 使用 Policy-Based 方法实现 Pendulum-v0](https://datawhalechina.github.io/leedeeprl-notes/#/chapter12/project3) |
+| [第十三章 AlphaStar 论文解读](https://datawhalechina.github.io/leedeeprl-notes/#/chapter13/chapter13) |||
 ## 贡献者
 <table border="0">
   <tbody>
@@ -37,12 +38,12 @@
       <td>
          <a href="https://github.com/qiwang067"><img width="70" height="70" src="https://github.com/qiwang067.png?s=40" alt="pic"></a><br>
          <a href="https://github.com/qiwang067">Qi Wang</a> 
-        <p>教程设计<br> 中国科学院大学</p>
+        <p>教程设计(第1~12章)<br> 中国科学院大学</p>
       </td>
       <td>
          <a href="https://github.com/yyysjz1997"><img width="70" height="70" src="https://github.com/yyysjz1997.png?s=40" alt="pic"></a><br>
          <a href="https://github.com/yyysjz1997">David Young</a> 
-        <p>习题设计 <br> 清华大学</p>
+        <p>习题设计&第13章 <br> 清华大学</p>
       </td>
       <td>
          <a href="https://github.com/JohnJim0816"><img width="70" height="70" src="https://github.com/JohnJim0816.png?s=40" alt="pic"></a><br>
@@ -53,11 +54,11 @@
   </tbody>
 </table>
 
+
 ## 致谢
 特别感谢 [@Sm1les](https://github.com/Sm1les)、[@LSGOMYP](https://github.com/LSGOMYP) 对本项目的帮助与支持。
 
 ## 关注我们
-
 <div align=center><img src="https://raw.githubusercontent.com/datawhalechina/pumpkin-book/master/res/qrcode.jpeg" width = "250" height = "270" alt="Datawhale是一个专注AI领域的开源组织，以“for the learner，和学习者一起成长”为愿景，构建对学习者最有价值的开源学习社区。关注我们，一起学习成长。"></div>
 
 ## LICENSE
